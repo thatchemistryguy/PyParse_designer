@@ -803,18 +803,6 @@
             updateInfoBox("all")
         })
 
-        //Per the standard workflow, a hint is shown to remind
-        //the user that the additive for EDC wells in the amide plate design
-        //should be added separately (typically oxymapure)
-        $(' #plate_template_select ').on("change", function() {
-            if($(this).val().substring(3) == "amide_plate") {
-                $(' .hint ').hide()
-                $(' #plate_hint_amide ').show()
-            }
-            else {
-                $(' .hint ').hide()
-            }
-        })
 
         //After pasting the unformatted .csv string into the textarea (i.e. from notepad
         //rather than Excel), import the plate design into plate_matter such that edits 

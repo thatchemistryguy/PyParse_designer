@@ -1,6 +1,8 @@
 
     //This .js file contains the SMILES, common name, CAS number and reagent designation for all 
     //commonly used reagents in HTE. They are indexed by their common name. 
+    //Do not use commas in the reagent name (as is typical for many reagents, such as N,N-dibenzylaniline),
+    //as this will cause an error. 
     let reagents = {
         "t-BuBrettPhos Pd G3": ["CC(C1=C(C2=C(P(C(C)(C)C)C(C)(C)C)C(OC)=CC=C2OC)C(C(C)C)=CC(C(C)C)=C1)C.NC1=CC=CC=C1C(C=CC=C2)=C2[Pd]OS(C)(=O)=O", "t-BuBrettPhos Pd G3", "1536473-72-9", "catalyst1"],
         "BippyPhos + (DMP)DAB-Pd-MAH": ["CC(P(C(C)(C)C)C1=CC=NN1C2=C(C3=CC=CC=C3)N(C4=CC=CC=C4)N=C2C5=CC=CC=C5)(C)C.O=C1OC(C=C1)=O.CC(C=CC=C2C)=C2/N=C/C=N/C3=C(C)C=CC=C3C.[Pd]", "BippyPhos + (DMP)DAB-Pd-MAH", "894086-00-1 + 2721487-84-7", "catalyst1"],
@@ -75,5 +77,5 @@
         "THF": ["C1CCCO1", "THF", "109-99-9", "solvent1"],
         "2-MeTHF": ["CC1CCCO1", "2-MeTHF", "96-47-9", "solvent1"],
         "Water": ["O", "Water", "7732-18-5", "solvent2"],
-        "InternalSTD": ["C1(N(CC2=CC=CC=C2)CC3=CC=CC=C3)=CC=CC=C1", "InternalSTD", "91-73-6", "internalstd"]
+        "Dibenzylaniline": ["C1(N(CC2=CC=CC=C2)CC3=CC=CC=C3)=CC=CC=C1", "Dibenzylaniline", "91-73-6", "internalstd"]
     }
