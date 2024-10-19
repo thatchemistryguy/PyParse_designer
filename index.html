@@ -3,8 +3,10 @@
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        <script src="https://code.jquery.com/jquery-3.7.1.js"integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="crossorigin="anonymous"></script>
-        <script src="jquery-csv.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="crossorigin="anonymous"></script>
+        
+        <!-- JQuery-csv is a third part plugin published under the MIT licence and available here: https://github.com/evanplaice/jquery-csv -->
+        <script src="src/jquery-csv.js"></script>
 
         <script src="plate_templates.js"></script>
         <script src="reagents_table.js"></script>
@@ -64,7 +66,7 @@
                                 <p>Reagent Input: </p>
                                 <button id="clear_rg_fields">Clear Fields</button><br><br>
                                 <p class = "hint" id="reagent_hint_fields">
-                                    Hint: The SMILES field and amount field MUST be specified. 
+                                    Hint: The SMILES field, the amount field and the type of compound MUST be specified. 
                                 </p>
                                 <p class = "hint" id="plate_hint_csvimport">
                                     Hint: The size of the plate described in the csv does not equal the plate size currently selected. 
@@ -633,13 +635,6 @@
                 $(' #rg_id_text ').val(reagents[text][2])
                 $(' #cmp_type_select ').val(reagents[text][3])
                 $(' #rg_amount_number ').val("")
-                if(reagents[text][3] == "internalstd") {
-                    $(' .hint ').hide()
-                    $(' #reagent_hint_std ').show()   
-                }
-                else {
-                    $(' .hint ').hide()
-                }
             }
         })
 
@@ -665,7 +660,7 @@
             let new_id = $(' #rg_id_text ').val()
             let new_amount = $(' #rg_amount_number ').val()
             let cmp_type = $(' #cmp_type_select ').val()
-            if(new_cmp != "" && new_amount != "" ) {
+            if(new_cmp != "" && new_amount != "" && cmp+type != "" ) {
                 if($(' .highlighted ').length > 0) {
                     $(' .highlighted ').each(function() {
                         let well = $(this).attr("id")
