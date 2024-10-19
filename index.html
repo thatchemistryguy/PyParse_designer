@@ -629,12 +629,13 @@
         //with the reagent details, if there was a match from reagents_table.js
         $(' #rg_name_text ').on("change", function() {
             let text = $(this).val()
-            
-            if(typeof reagents[text] !== undefined) {
-                $(' #rg_smiles_text ').val(reagents[text][0])
-                $(' #rg_id_text ').val(reagents[text][2])
-                $(' #cmp_type_select ').val(reagents[text][3])
-                $(' #rg_amount_number ').val("")
+            if(text != "") {
+                if(typeof reagents[text] !== undefined) {
+                    $(' #rg_smiles_text ').val(reagents[text][0])
+                    $(' #rg_id_text ').val(reagents[text][2])
+                    $(' #cmp_type_select ').val(reagents[text][3])
+                    $(' #rg_amount_number ').val("")
+                }
             }
         })
 
@@ -660,7 +661,7 @@
             let new_id = $(' #rg_id_text ').val()
             let new_amount = $(' #rg_amount_number ').val()
             let cmp_type = $(' #cmp_type_select ').val()
-            if(new_cmp != "" && new_amount != "" && cmp+type != "" ) {
+            if(new_cmp != "" && new_amount != "" && cmp_type != "" ) {
                 if($(' .highlighted ').length > 0) {
                     $(' .highlighted ').each(function() {
                         let well = $(this).attr("id")
@@ -925,7 +926,12 @@
                             let text = ""
                             
                             if(index == "solvent1" || index == "solvent2") {
-                                text += value[1] + ", " + value[0] + ", " + value[3] + " uL."
+                                if(value[1] != "") {
+                                    text += value[1] + ", " + value[0] + ", " + value[3] + " uL."
+                                }
+                                else {
+                                    text += value[0] + ", " + value[3] + " uL."
+                                }
                             }
                             else if(index == "temperature") {
                                 text += value + " °C."
@@ -940,7 +946,12 @@
                                 text += value + " nm."
                             }
                             else {
-                                text += value[1] + ", " + value[0] + ", " + value[3] + " umol."
+                                if(value[1] != "") {
+                                    text += value[1] + ", " + value[0] + ", " + value[3] + " umol."
+                                }
+                                else {
+                                    text += value[0] + ", " + value[3] + " umol."
+                                }
                             }
                             $(' #content_well_info_'+index).html(text)
                         }
