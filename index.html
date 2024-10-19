@@ -1,0 +1,1110 @@
+<html>
+
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.js"integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="crossorigin="anonymous"></script>
+        <script src="jquery-csv.js"></script>
+
+        <script src="plate_templates.js"></script>
+        <script src="reagents_table.js"></script>
+        <style>
+            #plate_table td {
+                width:45px;
+                height:25px;
+                text-align:center;
+                vertical-align:middle;
+                background-color:#ccc;
+                border:1px solid #fff;
+            }
+            #plate_table td.tmphighlight {
+                background-color:#cccccca1;
+            }
+            #plate_table td.highlighted {
+                background-color:#999;
+            }
+
+            input {
+                width: 300px;
+            }
+
+            #input_table td {
+                width:305px;
+                padding:3px;
+            }
+            #content_table td {
+                vertical-align:top;
+                
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <h1>PyParse Platemap Designer</h1>
+        <table id = "content_table">
+            <tr>
+                <td>
+                </td>
+                <td style="width:750px;">
+                    <label for="plate_size_select" style="width:150px;">Edit plate size:</label>
+                    <select name="plate_size" id="plate_size_select" style="width:150px;">
+                        <option value="24">24-Well Plate</option>
+                        <option value="48">48-Well Plate</option>
+                        <option value="96">96-Well Plate</option>
+                        <option value="384">384-Well Plate</option>
+                    </select>           
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table id ="input_table" class="table table-striped"> 
+                        <tr>
+                            <td>
+                                <p>Reagent Input: </p>
+                                <button id="clear_rg_fields">Clear Fields</button><br><br>
+                                <p class = "hint" id="reagent_hint_fields">
+                                    Hint: The SMILES field and amount field MUST be specified. 
+                                </p>
+                                <p class = "hint" id="plate_hint_csvimport">
+                                    Hint: The size of the plate described in the csv does not equal the plate size currently selected. 
+                                </p>
+                                <p class = "hint" id="plate_hint_enduser">
+                                    Hint: Exactly 24 wells should be highlighted before adding an end-user plate design. 
+                                </p>
+                                <p class = "hint" id="reagent_hint_nonehighlighted">
+                                    Hint: At least one well in the plate on the right should be highlighted (by clicking on it) before
+                                    attempting to add a reagent.  
+                                </p>
+                                <p class = "hint" id="reagent_hint_quantity">
+                                    Hint: When adding a solvent, the units for this box is in uL. When adding anything else, the 
+                                    units for this box are umol.    
+                                </p>
+                            </td>
+                            <td>
+                                
+                                <input type="text" id="rg_name_text" placeholder="Insert reagent name here (optional)" list = "reagents"></input><br>
+                                <datalist id="reagents"></datalist>
+                                <input type="text" id="rg_smiles_text" placeholder="Insert SMILES here"></input><br>
+                                <input type="text" id="rg_id_text" placeholder="Insert Reagent ID/CAS no. here (optional)"></input><br>
+                                <input type="number" id="rg_amount_number" placeholder="Insert quantity in umol or uL here"></input><br>
+                                <select name="rgType" id="cmp_type_select">
+                                    <option value="desired_product">Desired Product</option>
+                                    <option value="limiting_reactant">Limiting Reactant</option>
+                                    <option value="excess_reactant">Excess Reactant</option>
+                                    <option value="catalyst1">Reagent/Catalyst</option>
+                                    <option value="catalyst2">Co-Catalyst</option>
+                                    <option value="base">Base</option>
+                                    <option value="additive">Additive</option>
+                                    <option value="internalstd">Internal Standard</option>
+                                    <option value="solvent1">Solvent 1</option>
+                                    <option value="solvent2">Solvent 2</option>
+                                </select><br>
+                                <button id="add_cmp">Add Compound to Selected Wells</button>
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <p>Insert plate temperature: </p>
+                            </td>
+                            <td>
+                                <input type="number" id="temp_input_number" placeholder="Insert Plate Temp here /°C"></input>
+                                <button id="add_temp_button">Add Temperature</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <p>Insert reaction time: </p>
+                            </td>
+                            <td>
+                                <input type="number" id="time_input_number" placeholder="Insert Reaction Time /h"></input>
+                                <button id="add_time_button">Add Reaction Time</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <p>Insert irradiation power: </p>
+                            </td>
+                            <td>
+                                <select name="irradition_power_select" id="irradiation_power_input_select">
+                                    <option value="85">85 mW per Well</option>
+                                    <option value="170">170 mW per Well</option>
+                                    <option value="245">245 mW per Well</option>
+                                    <option value="320">320 mW per Well</option>
+                                    <option value="455">455 mW per Well</option>
+                                </select>
+                                <button id="add_irradiation_power_button">Add Irradiation Power</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Insert irradiation wavelength: </p>
+                            </td>
+                            <td>
+                                <select name="irradiation_wavelength_select" id="irradiation_wavelength_input_select">
+                                    <option value="385">385 nm</option>
+                                    <option value="450">450 nm</option>
+                                </select>
+                                <button id="add_irradiation_wavelength_button">Add Irradiation Wavelength</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <p>Add end-user plate design: </p>
+                            </td>
+                            <td>
+                                <select id="plate_template_select">
+                                    <option>Select plate...</option>
+                                    <option value="uL_suzuki_plate">uL Suzuki sp2-sp2</option>
+                                    <option value="mL_suzuki_plate">mL Suzuki sp2-sp2</option>
+                                </select>
+                                <button id="add_enduser_button">Add End-User Plate Design</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button id="load_csv_button">Read from CSV Text</button>
+                            </td>
+                            <td>
+                                <textarea id="load_csv_textarea" placeholder="Paste .csv text here"></textarea><br>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="btn btn-warning" id="clearAll">Clear All Data</button>
+                            </td>
+                            <td>
+                                <a class="btn btn-primary" href="#" id="download_csv_button" download="platemap.csv">Download CSV</a>
+                            </td>
+                        
+                        </tr>
+                    </table>
+                </td>
+
+                <td style = "width:750px; height:450px;">
+                    <table id="plate_table"></table>
+                </td>
+            </tr>
+        </table>
+        
+        <table class="table table-striped">
+            <tr>
+                <th colspan ="2"><p id="content_well_info_title"></p></th>
+                <th></th>
+                <th style="width:150px;"></th>
+                <th style="width:200px;"></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <td style="width:150px;"><p>Desired Product</p></td>
+                <td style="width:200px;"><button class="del_button" id="del_desired_product_button">Delete Definition</button></td>
+                <td><p id="content_well_info_desired_product"></p></td>
+                
+                <td style="width:150px;"><p>Base</p></td>
+                <td style="width:200px;"><button class="del_button" id="del_base_button">Delete Definition</button></td>
+                <td><p id="content_well_info_base"></p></td>
+
+                <td><p>Reaction Time</p></td>
+                <td><button class="del_button" id="del_time_button">Delete Definition</button></td>
+                <td><p id="content_well_info_time"></p></td>
+            </tr>
+            <tr>
+                <td><p>Limiting Reactant</p></td>
+                <td><button class="del_button" id="del_limiting_reactant_button">Delete Definition</button></td>
+                <td><p id="content_well_info_limiting_reactant"></p></td>
+
+                <td><p>Additive</p></td>
+                <td><button class="del_button" id="del_additive_button">Delete Definition</button></td>
+                <td><p id="content_well_info_additive"></p></td>
+
+                <td><p>Reaction Temperature</p></td>
+                <td><button class="del_button" id="del_temperature_button">Delete Definition</button></td>
+                <td><p id="content_well_info_temperature"></p></td>
+            </tr>
+            <tr>
+                <td><p>Excess Reactant</p></td>
+                <td><button class="del_button" id="del_excess_reactant_button">Delete Definition</button></td>
+                <td><p id="content_well_info_excess_reactant"></p></td>
+
+                <td><p>Solvent1</p></td>
+                <td><button class="del_button" id="del_solvent1_button">Delete Definition</button></td>
+                <td><p id="content_well_info_solvent1"></p></td>
+
+                <td><p>Irradiation Power</p></td>
+                <td><button class="del_button" id="del_irradiation_power_button">Delete Definition</button></td>
+                <td><p id="content_well_info_irradiation_power"></p></td>
+            </tr>
+            <tr>
+                <td><p>Reagent/Catalyst</p></td>
+                <td><button class="del_button" id="del_catalyst1_button">Delete Definition</button></td>
+                <td><p id="content_well_info_catalyst1"></p></td>
+
+                <td><p>Solvent2</p></td>
+                <td><button class="del_button" id="del_solvent2_button">Delete Definition</button></td>
+                <td><p id="content_well_info_solvent2"></p></td>
+
+                <td><p>Irradiation Wavelength</p></td>
+                <td><button class="del_button" id="del_irradiation_wavelength_button">Delete Definition</button></td>
+                <td><p id="content_well_info_irradiation_wavelength"></p></td>
+            </tr>
+            <tr>
+                <td><p>Co-Catalyst</p></td>
+                <td><button class="del_button" id="del_catalyst2_button">Delete Definition</button></td>
+                <td><p id="content_well_info_catalyst2"></p></td>
+
+                <td><p>Internal Standard</p></td>
+                <td><button class="del_button" id="del_internalstd_button">Delete Definition</button></td>
+                <td><p id="content_well_info_internalstd"></p></td>
+
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>  
+        
+
+    </body>
+    <script>
+        //Define plate_matter, which holds all info about what chemical matter is in each well of plate
+        let plate_matter = {}
+
+        //Set plate dimensions [rows, columns]
+        let plate_dim = {
+            24: [4, 6],
+            48: [4, 12],
+            96: [8, 12],
+            384: [16, 24]
+        }
+
+        //Define function, the clear the highlighted selection. 
+        function clearSelection() {
+            $('#plate_table td').toggleClass("highlighted", false)
+        }
+
+        //Define variables to store information during click-and-drag
+        //actions (see activateMouseOver below)
+        let isWellMouseDown = {
+            "active": false,
+            "start_row": "",
+            "start_col": 0,
+        }
+        let isRowMouseDown = false
+        let isColMouseDown = false
+
+        //Define function to bind mouse actions to the plate visualisation DOM 
+        //elements. The allows the user to click/click-and-drag wells, rows and columns 
+        //in the plate visualisation to select them for addition of a reagent. 
+        function activateMouseOver() {
+
+            $(".togglable")
+                .mousedown(function () {
+                    isWellMouseDown["active"] = true;
+                    isWellMouseDown["start_row"] = $(this).data("row")
+                    isWellMouseDown["start_col"] = $(this).data("col")
+                    
+                    return false; // prevent text selection
+                })
+                .mouseover(function () {
+                    if (isWellMouseDown["active"]) {
+                        //Determine the start and end point of the cursor 
+                        //click-and-drag, and temporarily highlight all wells
+                        //that fall in this rectangular area. 
+                        let end_row = $(this).data("row")
+                        let end_col = $(this).data("col")
+
+                        let min_row = Math.min(isWellMouseDown["start_row"].charCodeAt(0), end_row.charCodeAt(0))
+                        let max_row = Math.max(isWellMouseDown["start_row"].charCodeAt(0), end_row.charCodeAt(0))
+                        let min_col = Math.min(isWellMouseDown["start_col"], end_col)
+                        let max_col = Math.max(isWellMouseDown["start_col"], end_col)
+                        
+                        //If the well lies within the rectangular area, mark
+                        //this well with the tmphighlight class. 
+                        $(' .togglable ').each(function() {
+                            if($(this).data("row").charCodeAt(0) >= min_row && $(this).data("row").charCodeAt(0) <= max_row && 
+                                $(this).data("col") >= min_col && $(this).data("col") <= max_col) {
+    
+                                    $(this).toggleClass("tmphighlight", true)
+                            }
+                            else {
+                                $(this).toggleClass("tmphighlight", false)
+                            }
+                        })
+                    }
+                    else {
+                        if($(' .highlighted ').length == 0) {
+                            let well = $(this).attr("id")
+                            updateInfoBox([well])
+                        }
+                    }
+                })
+                .mouseup(function(e) {
+                    
+                    if (isWellMouseDown["active"]) {
+                        //Once the mouse button has been released, select
+                        //any wells which fell inside the rectangular area defined by 
+                        //the user's click-and-drag. 
+                        let end_row = $(this).data("row")
+                        let end_col = $(this).data("col")
+
+                        let min_row = Math.min(isWellMouseDown["start_row"].charCodeAt(0), end_row.charCodeAt(0))
+                        let max_row = Math.max(isWellMouseDown["start_row"].charCodeAt(0), end_row.charCodeAt(0))
+                        let min_col = Math.min(isWellMouseDown["start_col"], end_col)
+                        let max_col = Math.max(isWellMouseDown["start_col"], end_col)
+
+                        //If the well lies within the rectangular area, mark
+                        //this well with the highlighted class. 
+                        $(' .togglable ').each(function() {
+                            if($(this).data("row").charCodeAt(0) >= min_row && $(this).data("row").charCodeAt(0) <= max_row &&
+                                $(this).data("col") >= min_col && $(this).data("col") <= max_col) {
+                                    $(this).toggleClass("highlighted", true)
+                            }
+                            else if(!e.ctrlKey){
+                                $(this).toggleClass("highlighted", false)
+                            }
+                            
+                            $(this).toggleClass("tmphighlight", false)
+                            
+                        })
+
+                        //Describe contents of the wells selected
+                        let wells = []
+                        $(' .highlighted ').each(function() {
+                            wells.push($(this).attr("id"))
+                        })
+                        updateInfoBox(wells)
+                        isWellMouseDown["active"] = false
+
+                    }
+                })
+                //Override default browser behaviour. 
+                .bind("selectstart", function () {
+                    return false;
+                })
+            
+            //.plate_row is the left-hand edge of the plate visualisation, 
+            //activating when the user clicks/click-and-drags on the table cell
+            //describing row "A", "B", "C", etc
+            $(' .plate_row ')
+            .mousedown(function() {
+                isRowMouseDown = true
+
+                let row = $(this).data("row")
+                let any_highlighted = false
+                $(' .togglable ').each(function() {
+                    if($(this).hasClass("highlighted") && $(this).data("row") == row) {
+                        any_highlighted = true
+                    }
+                })
+                $(' .togglable ').each(function() {
+                    if (any_highlighted) {
+                        if($(this).data("row") == row) {
+                            $(this).toggleClass("highlighted", false)
+                        }
+                    }
+                    else {
+                        if($(this).data("row") == row) {
+                            $(this).toggleClass("highlighted", true)
+                        }
+                    }
+                })
+
+                //Describe contents of the wells selected
+                let wells = []
+                $(' .highlighted ').each(function() {
+                    wells.push($(this).attr("id"))
+                })
+                updateInfoBox(wells)
+                return false
+            })
+            .mouseover(function() {
+                if(isRowMouseDown) {
+                    let row = $(this).data("row")
+                    $(' .togglable ').each(function() {
+                        if ($(this).data("row") == row) {
+                            $(this).toggleClass("highlighted", true)
+                        }
+                    })
+
+                    //Describe contents of the wells selected
+                    let wells = []
+                    $(' .highlighted ').each(function() {
+                        wells.push($(this).attr("id"))
+                    })
+                    updateInfoBox(wells)
+                }
+                
+            })
+            .bind("selectstart", function () {
+                return false;
+            })
+
+            //.plate_colis the top edge of the plate visualisation, 
+            //activating when the user clicks/click-and-drags on the table cell
+            //describing column "1", "2", "3", etc
+            $(' .plate_col ')
+            .mousedown(function() {
+                isColMouseDown = true
+
+                let col = $(this).data("col")
+                let any_highlighted = false
+                $(' .togglable ').each(function() {
+                    if($(this).hasClass("highlighted") && $(this).data("col") == col) {
+                        any_highlighted = true
+                    }
+                })
+                $(' .togglable ').each(function() {
+                    if (any_highlighted) {
+                        if($(this).data("col") == col) {
+                            $(this).toggleClass("highlighted", false)
+                        }
+                    }
+                    else {
+                        if($(this).data("col") == col) {
+                            $(this).toggleClass("highlighted", true)
+                        }
+                    }
+                })
+
+                //Describe contents of the wells selected
+                let wells = []
+                $(' .highlighted ').each(function() {
+                    wells.push($(this).attr("id"))
+                })
+                updateInfoBox(wells)
+                return false
+            })
+            .mouseover(function() {
+                if(isColMouseDown) {
+                    let col = $(this).data("col")
+                    $(' .togglable ').each(function() {
+                        if ($(this).data("col") == col) {
+                            $(this).toggleClass("highlighted", true)
+                        }
+                    })
+
+                    //Describe contents of the wells selected
+                    let wells = []
+                    $(' .highlighted ').each(function() {
+                        wells.push($(this).attr("id"))
+                    })
+                    updateInfoBox(wells)
+                }
+            })
+            .bind("selectstart", function () {
+                return false;
+            })
+            
+            //If the top-left hand corner of the plate visualisation
+            //is clicked, select/de-select all wells in the plate 
+            //as appropriate. 
+            $(' #top-corner ')
+            .click(function() {
+                //Determine if any wells are highlighted already
+                let any_highlighted = false
+                $(' .togglable ').each(function() {
+                    if($(this).hasClass("highlighted")) {
+                        any_highlighted = true
+                    }
+                    
+                })
+                //If some wells are highlighted, deselect all wells
+                //Otherwise, select all wells. 
+                $(' .togglable ').each(function() {
+                    if(any_highlighted) {
+                        $(this).toggleClass("highlighted", false)
+                    }
+                    else {
+                        $(this).toggleClass("highlighted", true)
+                    }
+                    
+                })
+
+                //Describe contents of the wells selected in the infobox.
+                let wells = []
+                $(' .highlighted ').each(function() {
+                    wells.push($(this).attr("id"))
+                })
+                updateInfoBox(wells)
+            })
+            //Prevent default browser behaviour
+            .bind("selectstart", function() {
+                return false;
+            })
+
+            //If the cursor is no longer hovering over the plate visualisation,
+            //update the infobox to display info on all wells. 
+            $(' #plate_table').mouseout(function() {
+                if($(' .highlighted ').length == 0 && $(' .tmphighlight ').length == 0) {
+                    updateInfoBox("all")
+                }
+            })
+        }
+
+        //If the user completes a mouseup action anywhere on the document, ensure that
+        //all mousedown variables are set to false and that no wells are left with the 
+        //tmphighlight class. 
+        //This is to cover scenarios where the user starts a click-and-drag operation 
+        //on the plate, but moves the cursor off the plate before completing mouseup. 
+        $(document).mouseup(function () {
+            isRowMouseDown = false
+            isColMouseDown = false
+            isWellMouseDown["active"] = false
+            $(' .togglable ').each(function() {
+                $(this).toggleClass("tmphighlight", false)
+            })
+
+        });
+
+        //Refresh all wells in plate visualisation with the correct number
+        //of defined chemical matter. 
+        function refreshWell() {
+            $(' .togglable ').each(function() {
+                let well = $(this).attr("id")
+                let setProps = Object.values(plate_matter[well]).filter(x => x != "").length
+                $(this).html(setProps)
+            })
+        }
+
+        //On changing the plate size, redraw the table with the appropriate cell designations
+        $('#plate_size_select').on("change", function() {
+            $('#plate_table tr').remove()
+            let new_plate_size = $(this).val()
+            plate_matter = {}
+            for (let i = 0; i < plate_dim[new_plate_size][0]+1; i++) {
+                $(' #plate_table ').append("<tr></tr>")
+                for (let j = 0; j < plate_dim[new_plate_size][1]+1; j++) {
+                    if (i == 0 && j == 0) {
+                        $(' #plate_table tr:last').append("<td id='top-corner'></td>")
+                    }
+                    else if (i == 0 && j != 0) {
+                        $(' #plate_table tr:last').append("<td class='plate_col' data-col='" + j + "' id = 'col" + j + "'>" + j + "</td>")
+                    }
+                    else if (j == 0) {
+                        let row_des = String.fromCharCode(i + 64)
+                        $(' #plate_table tr:last').append("<td class='plate_row' data-row='" + row_des + "' id = 'row" + row_des + "'>" + row_des + "</td>")
+                    }
+                    else {
+                        let row_des = String.fromCharCode(i + 64)
+                        let well_des = row_des + j.toString()
+                        $(' #plate_table tr:last').append("<td class='togglable' data-row='" + row_des + "' data-col='" + j + "'id = '" + well_des + "'>0</td>")
+                        
+                        //Define the structure of the data for this well in plate_matter
+                        plate_matter[well_des] = {
+                            "desired_product": [],
+                            "limiting_reactant": [],
+                            "excess_reactant": [], 
+                            "catalyst1": [],
+                            "catalyst2": [],
+                            "base": [],  
+                            "additive": [],
+                            "internalstd": [],
+                            "solvent1": [],
+                            "solvent2": [], 
+                            "temperature": "",
+                            "time": "",
+                            "irradiation_power": "",
+                            "irradiation_wavelength": "",
+
+                        }
+                    }
+                } 
+            }
+            //Bind click-and-drag mouse actions to the newly formed table
+            activateMouseOver()
+        })
+
+        
+        //On writing in the name of a reagent, update the reagent input fields 
+        //with the reagent details, if there was a match from reagents_table.js
+        $(' #rg_name_text ').on("change", function() {
+            let text = $(this).val()
+            
+            if(typeof reagents[text] !== undefined) {
+                $(' #rg_smiles_text ').val(reagents[text][0])
+                $(' #rg_id_text ').val(reagents[text][2])
+                $(' #cmp_type_select ').val(reagents[text][3])
+                $(' #rg_amount_number ').val("")
+                if(reagents[text][3] == "internalstd") {
+                    $(' .hint ').hide()
+                    $(' #reagent_hint_std ').show()   
+                }
+                else {
+                    $(' .hint ').hide()
+                }
+            }
+        })
+
+        //Set all reagent input fields to be empty. 
+        $(' #clear_rg_fields ').click(function() {
+            $(' #rg_smiles_text ').val("")
+            $(' #rg_id_text ').val("")
+            $(' #cmp_type_select ').val("")
+            $(' #rg_amount_number ').val("")
+            $(' #rg_name_text ').val("")
+        })
+        
+        $(' #rg_amount_number ').click(function() {
+            $(' .hint ').hide()
+            $(' #reagent_hint_quantity ').show()
+        })
+
+        //Add the compound currently specified in the reagent input fields to
+        //all highlighted wells. 
+        $(' #add_cmp ').click(function() {
+            let new_cmp = $(' #rg_smiles_text ').val()
+            let new_name = $(' #rg_name_text ').val()
+            let new_id = $(' #rg_id_text ').val()
+            let new_amount = $(' #rg_amount_number ').val()
+            let cmp_type = $(' #cmp_type_select ').val()
+            if(new_cmp != "" && new_amount != "" ) {
+                if($(' .highlighted ').length > 0) {
+                    $(' .highlighted ').each(function() {
+                        let well = $(this).attr("id")
+                        plate_matter[well][cmp_type] = [new_cmp, new_name, new_id, new_amount]
+                    })
+                }
+                else {
+                    $(' .hint ').hide()
+                    $(' #reagent_hint_nonehighlighted ').show()
+                }
+            }
+            //If the user failed to specify the smiles of the reagent and/or
+            //the amount, don't add the reagent to the highlighted wells and
+            //warn the user that this info is mandatory. 
+            else {
+                $(' .hint ').hide()
+                $(' #reagent_hint_fields ').show()
+            }
+            
+            //Update the plate visualisation and the info box at bottom of screen
+            refreshWell()
+            clearSelection()
+            updateInfoBox("all")
+        })
+
+        //Add an end-user plate, to the 24-wells highlighted
+        //All data about what this end-user plate contains,
+        //and in which quantities, is contained in plate_templates.js
+        $(' #add_enduser_button ').click(function() {
+            let plate = $(' #plate_template_select').val()
+            
+            let plate_type = plate.substring(3)
+            let plate_scale = plate.substring(0,2) + "_quant"
+
+            //All end-user plates are 24-well, so only exactly 24 wells 
+            //should be highlighted. 
+            let selected = $(' .highlighted ').length
+            if(selected == 24) {
+                $.each(plate_templates[plate_type], function(index, value) {
+                    let i = 0
+                    $(' .highlighted ').each(function() {
+                        i++
+                        let well = $(this).attr("id")
+                        let rg_data = reagents[value["rgs"][i]].slice(0,3)
+                        plate_matter[well][index] = [...rg_data, value[plate_scale]]
+
+                    })
+                })    
+            }
+            else {
+                $(' .hint ').hide()
+                $(' #plate_hint_enduser ').show()  
+            }
+
+            refreshWell()
+            clearSelection()
+            updateInfoBox("all")
+        })
+
+        //Add the temperature for the plate. No wells need to be highlighted, 
+        //as temperature is not well-specific (a metal heating block can physically
+        //only be a single temperature).
+        $(' #add_temp_button ').click(function() {
+            let temperature = $(' #temp_input_number ').val()
+            $.each(plate_matter, function(key, value) {
+                plate_matter[key]["temperature"] = temperature
+            })
+
+            refreshWell()
+            clearSelection()
+            updateInfoBox("all")
+        })
+
+        //Add the reaction time for the plate. No wells need to be highlighted, 
+        //as reaction time is not (generally) well-specific. 
+
+        $(' #add_time_button ').click(function() {
+            let time = $(' #time_input_number ').val()
+            $.each(plate_matter, function(key, value) {
+                plate_matter[key]["time"] = time
+            })
+
+            refreshWell()
+            clearSelection()
+            updateInfoBox("all")
+        })
+
+        //Add the irradiation power per well for the plate. No wells 
+        //need to be highlighted. 
+        $(' #add_irradiation_power_button ').click(function() {
+            let power = $(' #irradiation_power_input_select ').val()
+            $.each(plate_matter, function(key, value) {
+                plate_matter[key]["irradiation_power"] = power
+            })
+
+            refreshWell()
+            clearSelection()
+            updateInfoBox("all")
+        })
+
+        //Add the irradiation wavelength per well for the plate. No wells 
+        //need to be highlighted, as current equipment means that all
+        //wells will always be irradiated at a single wavelength. 
+        $(' #add_irradiation_wavelength_button ').click(function() {
+            let wavelength = $(' #irradiation_wavelength_input_select ').val()
+            $.each(plate_matter, function(key, value) {
+                plate_matter[key]["irradiation_wavelength"] = wavelength
+            })
+
+            refreshWell()
+            clearSelection()
+            updateInfoBox("all")
+        })
+        
+        //Remove a parameter from a selection of wells, by highlighting 
+        //those wells and clicking the appropriate button in the infobox. 
+        $(' .del_button ').click(function() {
+            //Use the id of the element clicked to determine which parameter is to be changed. 
+            let full_id = $(this).attr("id")
+            let id = full_id.substr(4, full_id.length - 11)
+   
+            if(id == "temperature" || id == "time" || id == "irradiation_power" || id == "irradiation_wavelength") {
+                $.each(plate_matter, function(index, value) {
+                    plate_matter[index][id] = ""
+                })
+            }
+            else {
+                $(' .highlighted ').each(function() {
+                    plate_matter[$(this).attr("id")][id] = []
+                })
+            }
+
+            refreshWell()
+            clearSelection()
+            updateInfoBox("all")
+        })
+
+        //Per the standard workflow, a hint is shown to remind
+        //the user that the additive for EDC wells in the amide plate design
+        //should be added separately (typically oxymapure)
+        $(' #plate_template_select ').on("change", function() {
+            if($(this).val().substring(3) == "amide_plate") {
+                $(' .hint ').hide()
+                $(' #plate_hint_amide ').show()
+            }
+            else {
+                $(' .hint ').hide()
+            }
+        })
+
+        //After pasting the unformatted .csv string into the textarea (i.e. from notepad
+        //rather than Excel), import the plate design into plate_matter such that edits 
+        //can be made. 
+        //Note: the current plate size must equal the number of wells described in the 
+        //csv. 
+        $(' #load_csv_button ').click(function() {
+            let input_data = $(' #load_csv_textarea').val()
+            let data = $.csv.toObjects(input_data);
+            
+            //Warn the user that the csv wasn't imported because the current plate size
+            //didn't match the number of wells in the csv. 
+            if(Object.keys(data).length > Object.keys(plate_matter).length) {
+                $(' .hint ').hide()
+                $(' #plate_hint_csvimport ').show()
+            }
+            else {
+                $.each(data, function(index, value) {
+                    let well = value["Well"] || value["well"]
+
+                    $.each(value, function(header, well_data) {
+                        if(header.toLowerCase() != "well" && well_data != "") {
+
+                            if(header.toLowerCase().includes("smiles")) {
+                                let cmp_type = header.toLowerCase().substring(0, header.length-7)
+                                cmp_type = cmp_type.replace(" ", "_")
+                                plate_matter[well][cmp_type][0] = well_data
+                            }
+                            else if(header.toLowerCase().includes("name")) {
+                                let cmp_type = header.toLowerCase().substring(0, header.length-5)
+                                cmp_type = cmp_type.replace(" ", "_")
+                                plate_matter[well][cmp_type][1] = well_data
+                            }
+                            else if(header.toLowerCase().includes("id")) {
+                                let cmp_type = header.toLowerCase().substring(0, header.length-3)
+                                cmp_type = cmp_type.replace(" ", "_")
+                                plate_matter[well][cmp_type][2] = well_data
+                            }
+                            else if(header.toLowerCase().includes("amount")) {
+                                let cmp_type = header.toLowerCase().substring(0, header.length-7)
+                                cmp_type = cmp_type.replace(" ", "_")
+                                plate_matter[well][cmp_type][3] = well_data
+                            }
+                            else if(header.toLowerCase() == "time") {
+                                plate_matter[well]["time"] = well_data
+                            }
+                            else if(header.toLowerCase() == "temperature") {
+                                plate_matter[well]["temperature"] = well_data
+                            }
+                            else if(header.toLowerCase() == "irradiation_power") {
+                                plate_matter[well]["irradiation_power"] = well_data
+                            }
+                            else if(header.toLowerCase() == "irradiation_wavelength") {
+                                plate_matter[well]["irradiation_wavelength"] = well_data
+                            }
+                            
+                        }
+                    })
+                })
+            }
+            refreshWell()
+            clearSelection()
+            updateInfoBox("all")
+
+        })
+
+        //Delete all data from plate_matter. 
+        $('#clearAll').click(function(){
+            let new_plate_size = $('#plate_size_select').val()
+            for (let i = 1; i < plate_dim[new_plate_size][0]+1; i++) {
+                for (let j = 1; j < plate_dim[new_plate_size][1]+1; j++) {
+                    
+                    let row_des = String.fromCharCode(i + 64)
+                    let well_des = row_des + j.toString()
+                    plate_matter[well_des] = {
+                        "desired_product": [],
+                        "limiting_reactant": [],
+                        "excess_reactant": [], 
+                        "catalyst1": [],
+                        "catalyst2": [],
+                        "base": [],  
+                        "additive": [],
+                        "internalstd": [],
+                        "solvent1": [],
+                        "solvent2": [], 
+                        "temperature": "",
+                        "time": "",
+                        "irradiation_power": "",
+                        "irradiation_wavelength": "",
+                    }
+                }
+            }
+
+            clearSelection()
+            refreshWell()
+            updateInfoBox("all")
+        })  
+        
+        //Update the table at the bottom of the screen displaying information about 
+        //which parameters have been specified for the plate/selection
+        //if a single well is currently highlighted, full details of each parameter are
+        //provided. If no wells are highlighted, or multiple wells are highlighted,
+        //information is given describing how many wells have that parameter defined. 
+        function updateInfoBox(wells) {
+
+            if(wells == "all") {
+                $(' #content_well_info_title ').html("<strong>Contents of Plate: </strong>")
+                $.each(plate_matter["A1"], function(index, value) {
+                    let defno = 0
+                    $.each(plate_matter, function(bindex, bvalue) {
+                        if(bvalue[index][0] !== undefined && bvalue[index] != "") {
+                            defno++
+                        }
+                    })
+                    $(' #content_well_info_'+index).html(defno + " wells have been defined.")
+                })
+                
+            }
+            else {
+                if(wells.length == 1) {
+                    $(' #content_well_info_title').html("<strong>Contents of Well " + wells[0] + ":</strong>")
+
+                    $.each(plate_matter[wells[0]], function(index, value) {
+                        if(value[0] !== undefined && value != "") {
+                            let text = ""
+                            
+                            if(index == "solvent1" || index == "solvent2") {
+                                text += value[1] + ", " + value[0] + ", " + value[3] + " uL."
+                            }
+                            else if(index == "temperature") {
+                                text += value + " °C."
+                            }
+                            else if(index == "time") {
+                                text += value + " h."
+                            }
+                            else if(index == "irradiation_power") {
+                                text += value + " mW per well."
+                            }
+                            else if(index == "irradiation_wavelength") {
+                                text += value + " nm."
+                            }
+                            else {
+                                text += value[1] + ", " + value[0] + ", " + value[3] + " umol."
+                            }
+                            $(' #content_well_info_'+index).html(text)
+                        }
+                        else {
+                            $(' #content_well_info_'+index).html("Not defined.")
+                        }
+                    })
+                }
+                else {
+
+                    $(' #content_well_info_title').html("<strong>Contents of " + wells.length + " Highlighted Wells:</strong>")
+                    $.each(plate_matter[wells[0]], function(index, value) {
+                        let defno = 0
+                        $.each(wells, function(bindex, bvalue) {
+                            if(plate_matter[bvalue][index][0] !== undefined && plate_matter[bvalue][index] != "") {
+                                defno++
+                            }
+                        })
+                        $(' #content_well_info_'+index).html(defno + " wells have been defined.")
+                    })
+                }
+
+            }
+
+
+        }
+        
+        //Generate a single string with info on every parameter for every well
+        //in the plate where a desired_product was defined. 
+        //A csv file is then downloaded to the user's machine with the filename 
+        //"platemap.csv", as defined by the HTML DOM attribute.
+        $(' #download_csv_button ').click(function() {
+            let content = ""
+            let headers = ["well", "desired product smiles", "limiting reactant smiles", "internalstd smiles", "desired product name", "limiting reactant name", 
+                "internalstd name", "desired product id", "limiting reactant id", "internalstd id", "desired product amount", "limiting reactant amount", 
+                "internalstd amount", "excess reactant smiles", "excess reactant id", "excess reactant name", "excess reactant amount", "base smiles", "base name", 
+                "base id", "base amount", "catalyst1 smiles", "catalyst1 name", "catalyst1 id", "catalyst1 amount", 
+                "catalyst2 smiles", "catalyst2 name", "catalyst2 id", "catalyst2 amount",
+                "additive smiles", "additive name", "additive id", "additive amount", "solvent1 smiles", "solvent1 name", "solvent1 id", "solvent1 amount", 
+                "solvent2 smiles", "solvent2 name", "solvent2 id", "solvent2 amount", "temperature", "time", "irradiation_power", "irradiation_wavelength"]
+
+            content = headers.join(",")+"\n"
+
+            $.each(plate_matter, function(key, value) {
+                if(value["desired_product"][0] != "" && value["desired_product"][0] !== undefined) {
+                    let line = key + ","
+                    line += (value["desired_product"][0] || "") + ","
+                    line += (value["limiting_reactant"][0] || "") + ","
+                    line += (value["internalstd"][0] || "") + ","
+                    line += '"' + (value["desired_product"][1] || "") + '",'
+                    line += '"' + (value["limiting_reactant"][1] || "") + '",'
+                    line += '"' + (value["internalstd"][1] || "") + '",'
+                    line += (value["desired_product"][2] || "") + ","
+                    line += (value["limiting_reactant"][2] || "") + ","
+                    line += (value["internalstd"][2] || "") + ","
+                    line += (value["desired_product"][3] || "") + ","
+                    line += (value["limiting_reactant"][3] || "") + ","
+                    line += (value["internalstd"][3] || "") + ","
+
+                    line += (value["excess_reactant"][0] || "") + ","
+                    line += '"' + (value["excess_reactant"][1] || "") + '",'
+                    line += (value["excess_reactant"][2] || "") + ","
+                    line += (value["excess_reactant"][3] || "") + ","
+
+                    line += (value["base"][0] || "") + ","
+                    line += '"' + (value["base"][1] || "") + '",'
+                    line += (value["base"][2] || "") + ","
+                    line += (value["base"][3] || "") + ","
+
+                    line += (value["catalyst1"][0] || "") + ","
+                    line += '"' + (value["catalyst1"][1] || "") + '",'
+                    line += (value["catalyst1"][2] || "") + ","
+                    line += (value["catalyst1"][3] || "") + ","
+
+                    line += (value["catalyst2"][0] || "") + ","
+                    line += '"' + (value["catalyst2"][1] || "") + '",'
+                    line += (value["catalyst2"][2] || "") + ","
+                    line += (value["catalyst2"][3] || "") + ","
+
+                    line += (value["additive"][0] || "") + ","
+                    line += '"' + (value["additive"][1] || "") + '",'
+                    line += (value["additive"][2] || "") + ","
+                    line += (value["additive"][3] || "") + ","
+
+                    line += (value["solvent1"][0] || "") + ","
+                    line += '"' + (value["solvent1"][1] || "") + '",'
+                    line += (value["solvent1"][2] || "") + ","
+                    line += (value["solvent1"][3] || "") + ","
+
+                    line += (value["solvent2"][0] || "") + ","
+                    line += '"' + (value["solvent2"][1] || "") + '",'
+                    line += (value["solvent2"][2] || "") + ","
+                    line += (value["solvent2"][3] || "") + ","
+
+                    line += value["temperature"] + ","
+                    line += value["time"] + ","
+                    line += value["irradiation_power"] + ","
+                    line += value["irradiation_wavelength"]
+
+                    content += line + "\n"
+                }
+            })
+            this.href = "data:text/plain;charset=UTF-8," + encodeURIComponent(content)
+        })
+
+        
+
+        //When the document is ready, load the reagents (from reagents_table.js)
+        //into the reagents datalist, in the order specified by reagent_order,
+        //the by alphabetical order. 
+        $(document).ready(function() {
+            let reagent_order = ["base", "catalyst", "additive", "solvent1", "solvent2"]
+            
+            let sorted_reagents = Object.keys(reagents)
+
+            sorted_reagents.sort(function(x, y) {
+                if(reagent_order.indexOf(reagents[x][3]) == reagent_order.indexOf(reagents[y][3])) {
+                    if([x,y].sort().indexOf(x) == 0) {
+                        return -1
+                    }
+                    else {
+                        return 1
+                    }
+                }
+                else if(reagent_order.indexOf(reagents[x][3]) < reagent_order.indexOf(reagents[y][3])) {
+                    return -1
+                }
+                else if(reagent_order.indexOf(reagents[x][3]) > reagent_order.indexOf(reagents[y][3])) {
+                    return 1
+                }
+
+            })
+
+            $.each(sorted_reagents, function(key, value) {
+                let el = "<option value='" + value + "'>" + value + "</option>"
+                $(' #reagents ').append(el)
+            })
+            
+
+            $(' .hint ').hide()
+            updateInfoBox("all")
+        })
+
+        //Trigger a change in plate_size select so that the plate visualisation DOM elements
+        //are built and plate_matter is built correctly. 
+        $('#plate_size_select').trigger("change")
+
+
+    </script>
+</html>
