@@ -150,7 +150,10 @@ It was the intention when writing this lightweight tool to very broadly classify
 
 These classifications are of course not strictly correct from a chemist's point of view, but are a compromise based on the understanding that added more classifications would make the tool more cumbersome to use without solving the problem. It is important however that anyone reading the output understands these limitations, for example when building machine learning models. 
 
+Acknowledgements
+-----------------
 
+This script makes use of JQuery-csv (included in src), a third part plugin published under the MIT licence and available here: https://github.com/evanplaice/jquery-csv.
 		
 License
 ---------------
