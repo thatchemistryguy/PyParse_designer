@@ -127,7 +127,7 @@ You can also achieve the same effect by changing the plate size, which will also
 When you're building a platemap for a library synthesis or Direct-to-Biology (i.e. there are a lot of different starting materials and products), it is recommended
 that you first enumerate these compounds using your Electronic Lab Notebook to build a simple csv containing a list of starting materials and products, indexed by well. 
 
-You can then edit this .csv so that headers for the SMILES structures, amounts and IDs of these starting materials match what is expected by PyParse_designer. Finally, import this .csv into PyParse_designer to add the remaining parameters like base, catalyst, temperature and time for each well, saving time overall. 
+You can then edit this .csv so that headers for the SMILES structures, amounts and IDs of these starting materials match what is expected by PyParse_designer. Finally, [import](#uploading-a-platemap) this .csv into PyParse_designer to add the remaining parameters like base, catalyst, temperature and time for each well, saving time overall. 
 
 ### The Final Outputted Analytical Table
 
