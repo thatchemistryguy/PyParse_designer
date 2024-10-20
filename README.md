@@ -9,14 +9,21 @@ Description
 --------------- 
 
 This simple and lightweight tool is to facilitate the quick and easy creation of platemaps from high-throughput experimentation (HTE). 
-Once created, these platemaps can be used with [PyParse](https://github.com/thatchemistryguy/PyParse), a python script which takes the data from the platemap to analyse UPLC-MS data 
-and generate user-friendly outputs, including a standardised, machine-readable table that contains all information about that plate. 
+Once created, these platemaps can be used with [PyParse](https://github.com/thatchemistryguy/PyParse), a python script which takes the data from the platemap to analyse UPLC-MS data and generate user-friendly outputs, including a standardised, machine-readable table that contains all information about that plate. 
 
 In conjunction with one another, PyParse_designer and PyParse form an end-to-end workflow of plate design, analysis of data, long-term capture of the 
 information generated.
 
 By using this workflow, datasets containing everything from the ID of the catalyst in a particular well, to the temperature of the plate, to the 
 peak percentage area of product observed, are created. 
+
+Workflow in a Nutshell:
+
+1. PyParse_designer is used to define ***every*** parameter for ***every*** well in the plate
+2. This platemap is then combined with the reaction UPLC-MS data in PyParse, which looks to assign peaks to analytes.
+3. PyParse generates an analytical table, which includes information about both the inputs (catalyst amount, ID, temperature, etc) and the outputs (product percentage area,
+   retention time observed, m/z values, etc)
+4. The user uploads this analytical table to a global data lake for long-term storage, for future interrogation and to facilitate the creation of machine-learning models.
 
 
 
@@ -32,7 +39,7 @@ You can edit the plate size by selecting from four standardised options at the t
 ### Adding Reagents:
 
 Select wells by clicking on them on the plate visualisation. You can also:
- - click-and-drag a selection of wells
+ - Click-and-drag a selection of wells
  - Hold shift, and click on multiple wells in turn
  - Click either the letter/number for the row/column, to select all wells in that row or column respectively.
  - Click the top-left corner of the plate, to select or deselect all wells in one go.
@@ -42,6 +49,9 @@ and select the type of reagent from the dropdown menu. Now click "Add Compound t
 
 You can also select any of the pre-filled reagents by typing the first part of their name in the "reagent name" field, and selecting the one you want. 
 Note that the common abbreviations are typically used here, e.g. HATU, for the common amide coupling reagent. 
+
+When you add a reagent, you'll notice that the number given in the wells you selected will increase by 1. The number in each well is an indication of how many
+you have defined for that well so far, so you can get a quick idea of which wells might still be missing something. 
 
 ### What's Currently in the Plate?
 
@@ -82,12 +92,41 @@ and Electronic Lab Notebook.
 
 The headers of the .csv file are optimised for use in [PyParse](https://github.com/thatchemistryguy/PyParse), but these can be edited in the relevant section of index.html to match your preferred analytical software. 
 
-### Reading a Platemap
+### Uploading a Platemap
 
-You can load a platemap that was previously prepared in PyParse_designer by opening the .csv in a text-editor like Notepad, copying the contents, then pasting into the field 
-that says "Paste .csv text here". Edit the plate size to match the 
+You can load a platemap that was previously downloaded from Parse_designer:
+ - Open the .csv in a text-editor like Notepad
+ - Copy the contents of the entire file (Ctrl-A, Ctrl-C)
+ - Paste into the field in PyParse_designer that says "Paste .csv text here".
+ - Edit the plate size to match the size of the plate you're importing
+ - Click "Read from CSV Text"
+
+The plate information will load and the table at the bottom of the screen will update to reflect the change. 
+
+> [!WARNING]  
+> Uploading a platemap will overwrite any parameters that have already been defined!
 
 
+### Clear All Data
+
+You can remove everything from a plate and start afresh by clicking the button "Clear All Data". Beware that this action cannot be undone!
+
+You can also achieve the same effect by changing the plate size, which will also delete all parameters in the process. 
+
+### Building Plates for Library Synthesis or Direct-to-Biology
+
+When you're building a platemap for a library synthesis or Direct-to-Biology (i.e. there are a lot of different starting materials and products), it is recommended
+that you first enumerate these compounds using your Electronic Lab Notebook to build a simple csv containing a list of starting materials and products, indexed by well. 
+You can then edit this .csv so that headers for the SMILES structures, amounts and IDs of these starting materials match what is expected by PyParse_designer. Finally, import this .csv into PyParse_designer to add the remaining parameters like base, catalyst, temperature and time for each well, saving time overall. 
+
+### Notes on Nomenclature
+
+You'll notice that all of the pre-defined reagents have been assigned a default type, i.e. Potassium carbonate is listed as a base and APhos Pd G3 is listed as a catalyst. 
+These two examples are likely not contentious, but others, such as HATU being described as a catalyst are perhaps more so. 
+
+It was the intention when writing this lightweight tool to very broadly classify compounds by their typical usage, with the idea that a catalyst in this sense, simply "makes the reaction go". Following along these lines, a co-catalyst helps the catalyst, Solvent1 is the primary solvent, Solvent2 is the secondary solvent (often water), and the additive is "something else".
+
+These classifications are of course not strictly correct from a chemist's point of view, but are a compromise based on the understanding that added more classifications would make the tool more cumbersome to use without solving the problem. It is important however that anyone reading the output understands these limitations, for example when building machine learning models. 
 
 		
 License
