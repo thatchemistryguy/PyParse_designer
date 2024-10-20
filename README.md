@@ -52,11 +52,16 @@ Note that the common abbreviations are typically used here, e.g. HATU, for the c
 
 When you add a reagent, you'll notice that the number given in the wells you selected will increase by 1. The number in each well is an indication of how many
 you have defined for that well so far, so you can get a quick idea of which wells might still be missing something. 
+<p align="center">
+	<img src="https://github.com/user-attachments/assets/095262e4-460b-44c1-bb5e-5eaa8a4a4104" width="700">
+</p>
 
 ### What's Currently in the Plate?
 
 When you make any changes to the contents of the plate, you will see the table at the bottom of the screen update to reflect that change. By default it shows
 a summary of the whole plate, but by clicking on a single well in the plate visualisation, you can see exactly what you've added to that well. 
+
+![View Contents of Well](https://github.com/user-attachments/assets/39af071e-9683-480a-8418-c79ed04ab54b)
 
 From here, you can remove of any compound or plate parameter from the plate by selecting the wells you wish to change, and clicking the "Delete Definition" button. 
 
@@ -72,6 +77,9 @@ To add an End-User plate design to your plate:
  - Select 24 wells in your plate
  - Select the plate design from the drop down list on the left-hand side
  - Click "Add End-User Plate Design"
+<p align="center">
+	<img src="https://github.com/user-attachments/assets/08c5c0e4-8907-4518-9a63-c608b6fccb02" width="500">
+</p>
 
 An example of a Suzuki-Miyaura cross-coupling design is provided as an example. You can find out more about this plate design, and the advantages of end-user plates, by visiting the [blog post here](https://www.domainex.co.uk/news/high-throughput-experimentation-hte-approaches-domainex-advantages-end-user-plates). You'll find that two variations on this plate design can be added: 
  - the mL size, where 1 umol of catalyst is added to each well (for larger scale HTE plates)
@@ -84,6 +92,9 @@ All of this information is customisable in the plate_templates.js file, where yo
 Plate parameters are exactly that, they're the same for the whole plate, and don't differ from one well to another. 
 
 PyParse_designer allows the user to specify the temperature and reaction time, but also the irradiation power and wavelength for reactions where this is necessary. All of this is done using the fields and buttons on the left hand side, and you don't need to select any wells to do so. 
+<p align="center">
+<img src="https://github.com/user-attachments/assets/4575523e-40c2-4fe6-b385-facde83e038e" width="500">
+</p>
 
 ### Downloading Your Platemap
 
