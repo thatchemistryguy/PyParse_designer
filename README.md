@@ -40,7 +40,7 @@ You can edit the plate size by selecting from four standardised options at the t
 
 Select wells by clicking on them on the plate visualisation. You can also:
  - Click-and-drag a selection of wells
- - Hold shift, and click on multiple wells in turn
+ - Hold the Ctrl key on the keyboard, and click on multiple wells in turn
  - Click either the letter/number for the row/column, to select all wells in that row or column respectively.
  - Click the top-left corner of the plate, to select or deselect all wells in one go.
 
