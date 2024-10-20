@@ -64,7 +64,7 @@
         "DMA": ["O=C(C)N(C)C", "DMA", "127-19-5", "solvent1"],
         "tert-Amyl Alcohol": ["CCC(C)(C)O", "tert-Amyl Alcohol", "75-85-4", "solvent1"],
         "TBME": ["COC(C)(C)C", "TBME", "1634-04-4", "solvent1"],
-        "Ethylene Glycol": ["OCCO", "Ethylene Glycol", "107-21-1"],
+        "Ethylene Glycol": ["OCCO", "Ethylene Glycol", "107-21-1", "solvent1"],
         "Methanol": ["OC", "Methanol", "67-56-1", "solvent1"],
         "Ethanol": ["OCC", "Ethanol", "64-17-5", "solvent1"],
         "Acetone": ["CC(C)=O", "Acetone", "67-64-1", "solvent1"],
