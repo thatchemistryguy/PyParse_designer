@@ -126,6 +126,7 @@ You can also achieve the same effect by changing the plate size, which will also
 
 When you're building a platemap for a library synthesis or Direct-to-Biology (i.e. there are a lot of different starting materials and products), it is recommended
 that you first enumerate these compounds using your Electronic Lab Notebook to build a simple csv containing a list of starting materials and products, indexed by well. 
+
 You can then edit this .csv so that headers for the SMILES structures, amounts and IDs of these starting materials match what is expected by PyParse_designer. Finally, import this .csv into PyParse_designer to add the remaining parameters like base, catalyst, temperature and time for each well, saving time overall. 
 
 ### The Final Outputted Analytical Table
@@ -143,7 +144,7 @@ The headers were designed such that new data types (e.g. crude NMR data) could b
 
 ### Notes on Nomenclature
 
-You'll notice that all of the pre-defined reagents have been assigned a default type, i.e. Potassium carbonate is listed as a base and APhos Pd G3 is listed as a catalyst. 
+You'll notice that all of the pre-defined reagents have been assigned a default type, i.e. potassium carbonate is listed as a base and APhos Pd G3 is listed as a catalyst. 
 These two examples are likely not contentious, but others, such as HATU being described as a catalyst are perhaps more so. 
 
 It was the intention when writing this lightweight tool to very broadly classify compounds by their typical usage, with the idea that a catalyst in this sense, simply "makes the reaction go". Following along these lines, a co-catalyst helps the catalyst, Solvent1 is the primary solvent, Solvent2 is the secondary solvent (often water), and the additive is "something else".
